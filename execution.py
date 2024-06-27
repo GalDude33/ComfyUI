@@ -164,7 +164,7 @@ def recursive_execute(server, prompt, outputs, current_item, extra_data, execute
             obj = class_def()
             object_storage[(unique_id, class_type)] = obj
 
-        with Timer(f"[TimerLogs]\t{prompt_id}\t({unique_id})\t{class_type}"):
+        with Timer(f"[TimerLogs]\t{prompt_id}\t{unique_id}\t{class_type}"):
             output_data, output_ui = get_output_data(obj, input_data_all)
         outputs[unique_id] = output_data
         if len(output_ui) > 0:
