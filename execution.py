@@ -116,6 +116,22 @@ def format_value(x):
     else:
         return str(x)
 
+import time
+
+
+class Timer:
+    def __init__(self, message):
+        self.message = message
+
+    def __enter__(self):
+        self.start_time = time.time()
+        return self
+
+    def __exit__(self, *args):
+        self.end_time = time.time()
+        self.elapsed_time = self.end_time - self.start_time
+        logging.info(f"{self.message}: {self.elapsed_time} seconds")
+
 def recursive_execute(server, prompt, outputs, current_item, extra_data, executed, prompt_id, outputs_ui, object_storage):
     unique_id = current_item
     inputs = prompt[unique_id]['inputs']
@@ -148,7 +164,8 @@ def recursive_execute(server, prompt, outputs, current_item, extra_data, execute
             obj = class_def()
             object_storage[(unique_id, class_type)] = obj
 
-        output_data, output_ui = get_output_data(obj, input_data_all)
+        with Timer(f"[TimerLogs] ({prompt_id}): Node {unique_id} ({class_type})"):
+            output_data, output_ui = get_output_data(obj, input_data_all)
         outputs[unique_id] = output_data
         if len(output_ui) > 0:
             outputs_ui[unique_id] = output_ui
